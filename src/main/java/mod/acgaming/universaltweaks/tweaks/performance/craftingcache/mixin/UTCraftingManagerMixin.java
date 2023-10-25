@@ -42,9 +42,12 @@ public class UTCraftingManagerMixin
         matrixKey = new UTCraftMatrixCacheKey(craftMatrix, worldIn);
         Optional<IRecipe> optionalContent = NON_NBT_CRAFT_CACHE.getAndMoveToFirst(matrixKey);
         if (optionalContent != null) {
-            if (UTConfigGeneral.DEBUG.utDebugToggle) UniversalTweaks.LOGGER.debug("UTCraftingManager ::: Find matching recipe - cache hit");
-            matrixKey = null;
-            cir.setReturnValue(optionalContent.orElse(null));
+            IRecipe recipe = optionalContent.orElse(null);
+            if (recipe == null || recipe.matches(craftMatrix, worldIn)) {
+                if (UTConfigGeneral.DEBUG.utDebugToggle) UniversalTweaks.LOGGER.debug("UTCraftingManager ::: Find matching recipe - cache hit");
+                matrixKey = null;
+                cir.setReturnValue(recipe);
+            }
         } else {
             if (UTConfigGeneral.DEBUG.utDebugToggle) UniversalTweaks.LOGGER.debug("UTCraftingManager ::: Find matching recipe - cache miss");
         }
